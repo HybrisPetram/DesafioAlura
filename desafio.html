@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Desafio</title>
+        <link rel="stylesheet" href="estilo.css">
+        <link rel="stylesheet" href="reset.css">
+        <script defer src="script.js"></script>
+    </head>
+        <header style="background-color: #1B2D89;">
+            <center> <img src="cabeza.jpg" width="880" height="250"> </center>
+        </header>
+        
+        <main>
+            <ul class="cuerpo">
+                <li class="textoIngresado">
+                    <textarea cols= "30" rows="12" type="text" 
+                    class="palabra" required placeholder="Ingrese mensaje"
+                    onfocus="this.placeholder=''"
+                    onblur="this.placeholder='Ingrese mensaje'"></textarea>
+                    <p class="advertencia">
+                        No acepta caracteres especiales o mayusculas. 
+                    </p>
+                    <div class="botones">
+                        <button class="botonEncriptar" onclick="leerencriptado()">
+                            Encriptar
+                        </button>
+                        <button class="botonDesencriptar" onclick="leerdesencriptado()">
+                            Desencriptar
+                        </button>
+                    </div>
+                    
+                </li>
+
+                <li class="textoSalida">
+                    <output id="mensajeEncriptado" class="pantallaTexto">
+                        <img class="mono" src="FONDO.png" alt="Persona buscando">
+                        <p class="primerMensaje">
+                            Ningún mensaje fue encontrado
+                        </p>
+
+                        <p class="segundoMensaje">
+                                Ingrese el texto que desee encriptar o desencriptar
+                        </p>
+                        
+                    </output>
+                    <button class="botoncopiar" id="botoncopiar" onclick="copiarAlPortapapeles('mensajeEncriptado')">
+                        Copiar
+                    </button>   
+                </li>
+            </ul>
+        </main>
+        
+    </body>
+    <script>
+
+        
+        var vocales = ["a","e","i","o","u"];
+        var encriptacion = ["ai","enter","imes","ober","ufat"]
+        var espacios = [1,4,3,3,3,3,2,2,3,3,5,4,3,4,4,5,4,5,5,4,4,3,6,4,5,5,5,4,3,3,2,3,3,3,5,5,6,3,5,6,6,8,6,6,7,1,1,3,4,3,8,8,5,7,4,5,5,7,2,5,5,4,3,5,3,5,4,4,4,4,6,8,6,8,7,6,7,6,5,9,9]
+        var mencriptado = [];
+        var mdesencriptado = [];
+        var espacio = "";
+        var texto = document.querySelector(".palabra");
+        const re = /[&<>]/g;
+        
+        function dividirCadena(cadenaADividir,separador) {
+            const resultEncriptar = cadenaADividir.value.match(re);
+            if (resultEncriptar == null){
+                mencriptado = [];
+                var arrayDeCadenas = cadenaADividir.value.split(separador);
+            
+                for (var i=0; i < arrayDeCadenas.length; i++) {
+                    for (var j=0; j< vocales.length; j++){
+                        if(arrayDeCadenas[i] == vocales[j]){
+                            mencriptado[i] = encriptacion[j];
+                            break;
+                        }
+                        else{
+                            mencriptado[i] = arrayDeCadenas[i];
+                        }
+                    }
+                
+                
+                }
+            
+                var finalEncriptado = "";
+                for (var i=0; i < arrayDeCadenas.length; i++){
+                    finalEncriptado = finalEncriptado + mencriptado[i];
+                }
+                if(finalEncriptado != ""){
+                    document.getElementById("mensajeEncriptado").innerHTML = finalEncriptado;
+                    document.getElementById("botoncopiar").style.visibility="visible";
+                    cadenaADividir.value="";
+                }    
+            }else{
+                alert("No puede ingresar los siguientes caracteres especiales: &,<,>"); 
+            }
+        }
+
+        function leerencriptado(){
+            dividirCadena(texto,espacio);
+        }
+
+        function desencriptar(mensaje,separacion){
+            const resultDesencriptar = mensaje.value.match(re);
+            if (resultDesencriptar == null){
+                mdesencriptado = [];
+                var vectorEncriptado = mensaje.value.split(separacion);
+                for (var i=0; i < vectorEncriptado.length; i++){
+                    for (var j=0; j < vocales.length; j++){
+                        if(vectorEncriptado[i] == vocales[j]){
+                            mdesencriptado[i] = vocales[j];
+                            i = i+espacios[j];
+                            break;
+                        }
+                        else{
+                            mdesencriptado[i] = vectorEncriptado[i];
+                        }
+                    }
+                
+                }
+
+                var finalDesencriptado = "";
+                for (var i=0; i < vectorEncriptado.length; i++){
+                    if(mdesencriptado[i]!=undefined){
+                        finalDesencriptado = finalDesencriptado + mdesencriptado[i];
+                    
+                    }
+                
+                }
+                if(finalDesencriptado != ""){
+                    document.getElementById("mensajeEncriptado").innerHTML = finalDesencriptado;
+                    document.getElementById("botoncopiar").style.visibility="visible";
+                    mensaje.value="";
+                }
+            }else{
+                alert("No puede ingresar los siguientes caracteres especiales: &,<,>");
+            }    
+        }
+
+        function leerdesencriptado(){
+            desencriptar(texto,espacio);
+        }
+
+        function copiarAlPortapapeles(id_elemento) {
+            var aux = document.createElement("input");
+            aux.setAttribute("value", document.getElementById(id_elemento).innerHTML);
+            document.body.appendChild(aux);
+            aux.select();
+            document.execCommand("copy");
+            document.body.removeChild(aux);
+        }
+    </script>
+        
+        </main>
+    </body>
+</html>
